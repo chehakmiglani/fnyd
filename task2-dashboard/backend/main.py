@@ -31,10 +31,17 @@ app.add_middleware(
 
 # Initialize Groq client
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY environment variable not set")
+# Note: API key can be set later via environment variable
+# It will only be required when making API calls
 
-client = Groq(api_key=GROQ_API_KEY)
+def get_groq_client():
+    """Get or initialize Groq client"""
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY environment variable not set. Please set it before making API calls.")
+    return Groq(api_key=api_key)
+
+client = None  # Will be initialized on first API call
 
 # Database setup
 DATABASE_PATH = "feedback.db"
@@ -96,7 +103,8 @@ Generate a brief, professional response acknowledging their feedback and address
 Keep response to 2-3 sentences."""
 
     try:
-        message = client.chat.completions.create(
+        groq_client = get_groq_client()
+        message = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="mixtral-8x7b-32768",
             temperature=0.7,
@@ -116,7 +124,8 @@ def generate_ai_summary(review: str) -> str:
 Summary:"""
 
     try:
-        message = client.chat.completions.create(
+        groq_client = get_groq_client()
+        message = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="mixtral-8x7b-32768",
             temperature=0.3,
@@ -136,7 +145,8 @@ def generate_recommended_actions(review: str, rating: int) -> str:
 Return as a simple numbered list."""
 
     try:
-        message = client.chat.completions.create(
+        groq_client = get_groq_client()
+        message = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="mixtral-8x7b-32768",
             temperature=0.7,
