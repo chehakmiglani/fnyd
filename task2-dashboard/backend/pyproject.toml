@@ -1,19 +1,16 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "ai-feedback-backend"
 version = "1.0.0"
 description = "AI-powered feedback system backend"
-authors = ["Your Name <you@example.com>"]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = "0.115.0"
-uvicorn = { version = "0.30.0", extras = ["standard"] }
-groq = "0.9.0"
-python-dotenv = "1.0.1"
-pydantic = "2.9.2"
-
-[tool.poetry.dev-dependencies]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.30.0",
+    "groq==0.9.0",
+    "python-dotenv==1.0.1",
+    "pydantic==2.9.2",
+]
